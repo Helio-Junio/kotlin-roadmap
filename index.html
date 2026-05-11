@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kotlin & Compose — Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0A0A0F;
+  --bg2: #111118;
+  --bg3: #18181F;
+  --bg4: #1E1E28;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #F0EFF8;
+  --text2: #9B99B8;
+  --text3: #5E5C78;
+  --purple: #7C6FF7;
+  --purple2: #A89BFF;
+  --purple3: #3D3680;
+  --green: #4ECBA0;
+  --green2: #1A5C47;
+  --amber: #F0A429;
+  --amber2: #5C3D0A;
+  --coral: #F06060;
+  --coral2: #5C1A1A;
+  --blue: #4EA8F0;
+  --blue2: #1A3A5C;
+  --font-head: 'Syne', sans-serif;
+  --font-code: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-code);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRID BG */
+body::before {
+  z-index: -1;
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,111,247,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,111,247,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.glow {
+  position: fixed;
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,111,247,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  top: -200px; left: -200px;
+  animation: driftGlow 12s ease-in-out infinite alternate;
+}
+.glow2 {
+  position: fixed;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(78,203,160,0.08) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  bottom: -100px; right: -100px;
+  animation: driftGlow2 15s ease-in-out infinite alternate;
+}
+@keyframes driftGlow  { to { transform: translate(80px, 60px); } }
+@keyframes driftGlow2 { to { transform: translate(-60px, -40px); } }
+
+/* LAYOUT */
+#app { position: relative; z-index: 2; display: flex; min-height: 100vh; }
+
+/* SIDEBAR */
+#sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 100;
+  transition: transform 0.3s;
+}
+
+.sidebar-logo {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo .logo-kt {
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--purple2);
+  letter-spacing: -0.5px;
+}
+.sidebar-logo .logo-sub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sidebar-progress-wrap {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-progress-label {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+.sidebar-progress-bar {
+  height: 4px;
+  background: var(--bg4);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.sidebar-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--purple), var(--green));
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.sidebar-nav { flex: 1; padding: 12px 0; }
+
+.nav-phase-group { margin-bottom: 4px; }
+
+.nav-phase-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: var(--text2);
+  font-family: var(--font-code);
+  font-size: 12px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  border-radius: 0;
+}
+.nav-phase-btn:hover { background: var(--bg3); color: var(--text); }
+.nav-phase-btn.active { background: var(--bg4); color: var(--purple2); }
+.nav-phase-btn .phase-dot {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.nav-phase-btn .phase-dot.done { background: var(--green2); color: var(--green); }
+.nav-phase-btn .phase-dot.active { background: var(--purple3); color: var(--purple2); }
+.nav-phase-btn .phase-dot.locked { background: var(--bg4); color: var(--text3); }
+.nav-phase-btn .nav-check { margin-left: auto; color: var(--green); font-size: 12px; }
+
+.nav-lesson-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 20px 7px 52px;
+  background: transparent;
+  border: none;
+  color: var(--text3);
+  font-family: var(--font-code);
+  font-size: 11px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+}
+.nav-lesson-btn:hover { color: var(--text2); }
+.nav-lesson-btn.active { color: var(--purple2); }
+.nav-lesson-btn.done { color: var(--green); }
+.nav-lesson-btn::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* MAIN */
+#main {
+  margin-left: 260px;
+  flex: 1;
+  min-height: 100vh;
+}
+
+/* TOPBAR */
+#topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+}
+.topbar-breadcrumb { font-size: 12px; color: var(--text3); }
+.topbar-breadcrumb span { color: var(--text2); }
+.topbar-xp {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--text2);
+}
+.xp-badge {
+  background: var(--purple3);
+  color: var(--purple2);
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* CONTENT */
+#content {
+  padding: 40px 48px 80px;
+  max-width: 900px;
+}
+
+/* SCREENS */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* HOME SCREEN */
+.home-hero {
+  margin-bottom: 48px;
+}
+.home-hero .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--green);
+  background: rgba(78,203,160,0.1);
+  border: 1px solid rgba(78,203,160,0.2);
+  padding: 4px 14px;
+  border-radius: 999px;
+  margin-bottom: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.home-hero h1 {
+  font-family: var(--font-head);
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 16px;
+}
+.home-hero h1 .accent { color: var(--purple2); }
+.home-hero p {
+  font-size: 15px;
+  color: var(--text2);
+  max-width: 560px;
+  line-height: 1.7;
+}
+
+.phase-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px; }
+
+.phase-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.phase-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.phase-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.phase-card:hover::before { opacity: 1; }
+.phase-card.c-purple::before { background: radial-gradient(circle at 0% 0%, rgba(124,111,247,0.08), transparent 60%); }
+.phase-card.c-green::before  { background: radial-gradient(circle at 0% 0%, rgba(78,203,160,0.08), transparent 60%); }
+.phase-card.c-blue::before   { background: radial-gradient(circle at 0% 0%, rgba(78,168,240,0.08), transparent 60%); }
+.phase-card.c-amber::before  { background: radial-gradient(circle at 0% 0%, rgba(240,164,41,0.08), transparent 60%); }
+.phase-card.c-coral::before  { background: radial-gradient(circle at 0% 0%, rgba(240,96,96,0.08), transparent 60%); }
+
+.phase-card .card-num {
+  font-family: var(--font-head);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.c-purple .card-num { color: var(--purple2); }
+.c-green  .card-num { color: var(--green); }
+.c-blue   .card-num { color: var(--blue); }
+.c-amber  .card-num { color: var(--amber); }
+.c-coral  .card-num { color: var(--coral); }
+
+.phase-card h3 {
+  font-family: var(--font-head);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.phase-card p { font-size: 12px; color: var(--text3); line-height: 1.5; margin-bottom: 12px; }
+
+.card-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 14px; }
+.pill {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+}
+.c-purple .pill { background: var(--purple3); color: var(--purple2); }
+.c-green  .pill { background: var(--green2); color: var(--green); }
+.c-blue   .pill { background: var(--blue2); color: var(--blue); }
+.c-amber  .pill { background: var(--amber2); color: var(--amber); }
+.c-coral  .pill { background: var(--coral2); color: var(--coral); }
+
+.card-progress { height: 2px; background: var(--bg4); border-radius: 999px; overflow: hidden; }
+.card-progress-fill { height: 100%; border-radius: 999px; transition: width 0.5s; }
+.c-purple .card-progress-fill { background: var(--purple); }
+.c-green  .card-progress-fill { background: var(--green); }
+.c-blue   .card-progress-fill { background: var(--blue); }
+.c-amber  .card-progress-fill { background: var(--amber); }
+.c-coral  .card-progress-fill { background: var(--coral); }
+
+.card-weeks {
+  position: absolute;
+  top: 16px; right: 16px;
+  font-size: 10px;
+  color: var(--text3);
+}
+
+.phase-card.full-width { grid-column: 1 / -1; }
+
+/* LESSON SCREEN */
+.lesson-header { margin-bottom: 36px; }
+.lesson-phase-tag {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+.lesson-header h1 {
+  font-family: var(--font-head);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 10px;
+}
+.lesson-header p { font-size: 14px; color: var(--text2); max-width: 600px; }
+
+/* MODULE BLOCKS */
+.module {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow: hidden;
+}
+.module-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.module-header:hover { background: var(--bg3); }
+.module-num {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  background: var(--purple3);
+  color: var(--purple2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+  flex-shrink: 0;
+}
+.module-title {
+  font-family: var(--font-head);
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+}
+.module-toggle {
+  color: var(--text3);
+  font-size: 16px;
+  transition: transform 0.2s;
+}
+.module.open .module-toggle { transform: rotate(180deg); }
+.module-body {
+  display: none;
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border);
+}
+.module.open .module-body { display: block; }
+
+/* PROSE */
+.prose { color: var(--text2); line-height: 1.8; }
+.prose p { margin-bottom: 14px; }
+.prose strong { color: var(--text); font-weight: 600; }
+.prose h3 {
+  font-family: var(--font-head);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 20px 0 10px;
+}
+.prose ul { padding-left: 20px; margin-bottom: 14px; }
+.prose ul li { margin-bottom: 6px; }
+
+/* CODE BLOCKS */
+pre {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  overflow-x: auto;
+  margin: 16px 0;
+  font-family: var(--font-code);
+  font-size: 13px;
+  line-height: 1.7;
+  position: relative;
+}
+pre .copy-btn {
+  position: absolute;
+  top: 12px; right: 12px;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text3);
+  font-family: var(--font-code);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+}
+pre .copy-btn:hover { color: var(--text); border-color: var(--border2); }
+pre .copy-btn.copied { color: var(--green); border-color: var(--green2); }
+
+code { font-family: var(--font-code); }
+p code, li code {
+  background: var(--bg3);
+  color: var(--purple2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* SYNTAX */
+.kw  { color: #A89BFF; }
+.fn  { color: #7EC8F0; }
+.str { color: #F0A060; }
+.cmt { color: #4A4870; }
+.num { color: #F0A429; }
+.cls { color: #4ECBA0; }
+.ann { color: #F06060; }
+
+/* CALLOUT */
+.callout {
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.callout.info { background: rgba(78,168,240,0.08); border: 1px solid rgba(78,168,240,0.2); color: #7EC8F0; }
+.callout.tip  { background: rgba(78,203,160,0.08); border: 1px solid rgba(78,203,160,0.2); color: var(--green); }
+.callout.warn { background: rgba(240,164,41,0.08);  border: 1px solid rgba(240,164,41,0.2);  color: var(--amber); }
+.callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 13px;
+}
+th {
+  text-align: left;
+  padding: 10px 14px;
+  background: var(--bg3);
+  color: var(--text2);
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+tr:last-child td { border-bottom: none; }
+
+/* EXERCISE CARDS */
+.exercises { margin-top: 24px; }
+.exercises h2 {
+  font-family: var(--font-head);
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ex-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+.ex-card:hover { border-color: var(--border2); }
+.ex-card-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.ex-num {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700;
+  flex-shrink: 0;
+}
+.ex-title { font-size: 14px; font-weight: 600; color: var(--text); flex: 1; }
+.diff-badge {
+  font-size: 10px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.diff-easy   { background: rgba(78,203,160,0.15); color: var(--green); }
+.diff-medium { background: rgba(240,164,41,0.15);  color: var(--amber); }
+.diff-hard   { background: rgba(240,96,96,0.15);   color: var(--coral); }
+.done-pill { font-size: 10px; padding: 2px 10px; border-radius: 999px; background: rgba(78,203,160,0.15); color: var(--green); font-weight: 600; display: none; }
+.ex-desc { font-size: 13px; color: var(--text3); line-height: 1.6; margin-bottom: 12px; }
+.hint-box {
+  background: rgba(240,164,41,0.06);
+  border: 1px solid rgba(240,164,41,0.15);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--amber);
+  margin-bottom: 12px;
+  display: none;
+  line-height: 1.6;
+}
+.hint-box.vis { display: block; }
+.ex-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+/* BUTTONS */
+button, .btn {
+  font-family: var(--font-code);
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 12px;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border2);
+  color: var(--text2);
+}
+.btn-ghost:hover { background: var(--bg3); color: var(--text); }
+.btn-primary {
+  background: var(--purple3);
+  color: var(--purple2);
+  border: 1px solid rgba(124,111,247,0.3);
+}
+.btn-primary:hover { background: rgba(124,111,247,0.25); }
+.btn-success {
+  background: var(--green2);
+  color: var(--green);
+  border: 1px solid rgba(78,203,160,0.3);
+}
+.btn-success:hover { background: rgba(78,203,160,0.2); }
+
+/* STATS BAR */
+.stats-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.stat-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 12px;
+  color: var(--text3);
+}
+.stat-item span {
+  display: block;
+  font-family: var(--font-head);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+/* NAV BOTTOM */
+.lesson-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+
+/* MOBILE TOGGLE */
+.mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 12px; left: 12px;
+  z-index: 200;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  #sidebar { transform: translateX(-100%); }
+  #sidebar.open { transform: translateX(0); }
+  #main { margin-left: 0; }
+  #content { padding: 20px 20px 60px; }
+  .home-hero h1 { font-size: 32px; }
+  .phase-cards { grid-template-columns: 1fr; }
+  .mobile-toggle { display: flex; }
+  .phase-card.full-width { grid-column: 1; }
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bg3); }
+</style>
+</head>
+<body>
+<div class="glow"></div>
+<div class="glow2"></div>
+<button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+
+<div id="app">
+  <nav id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-kt">Kotlin Roadmap</div>
+      <div class="logo-sub">Zero → Mid Level</div>
+    </div>
+    <div class="sidebar-progress-wrap">
+      <div class="sidebar-progress-label">
+        <span>Progresso geral</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="sidebar-progress-bar">
+        <div class="sidebar-progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="sidebar-nav" id="sidebar-nav"></div>
+  </nav>
+
+  <main id="main">
+    <div id="topbar">
+      <div class="topbar-breadcrumb" id="breadcrumb">
+        <span>Início</span>
+      </div>
+      <div class="topbar-xp">
+        <span>XP</span>
+        <span class="xp-badge" id="xp-badge">0</span>
+      </div>
+    </div>
+
+    <div id="content">
+      <!-- screens injected by JS -->
+    </div>
+  </main>
+</div>
+
+<script>
+// ─────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────
+const PHASES = [
+  {
+    id: 'fase1',
+    title: 'Kotlin Essencial',
+    subtitle: 'A linguagem',
+    color: 'c-purple',
+    weeks: 'Sem. 1–2',
+    pills: ['Variables & Types','OOP','Data classes','Sealed classes','Lambdas','Coroutines'],
+    modules: [
+      {
+        id: 'f1m1', title: 'val, var e tipos de dados',
+        content: `
+<div class="prose">
+<p>Em Kotlin, toda variável é declarada com <code>val</code> (imutável) ou <code>var</code> (mutável). O compilador infere o tipo automaticamente.</p>
+<p><strong>Regra de ouro:</strong> prefira sempre <code>val</code>. Use <code>var</code> só quando o valor realmente precisa mudar.</p>
+</div>
+<pre><code><span class="cmt">// val = não pode mudar (como "final" no Java)</span>
+<span class="kw">val</span> nome: <span class="cls">String</span> = <span class="str">"Lucas"</span>
+<span class="kw">val</span> idade = <span class="num">26</span>          <span class="cmt">// tipo inferido: Int</span>
+<span class="kw">val</span> altura = <span class="num">1.75</span>       <span class="cmt">// tipo inferido: Double</span>
+<span class="kw">val</span> ativo = <span class="kw">true</span>        <span class="cmt">// tipo inferido: Boolean</span>
+
+<span class="cmt">// var = pode mudar</span>
+<span class="kw">var</span> pontuacao = <span class="num">0</span>
+pontuacao = <span class="num">100</span>
+pontuacao += <span class="num">50</span>
+
+println(<span class="str">"$nome tem $idade anos e $pontuacao pontos"</span>)
+<span class="cmt">// saída: Lucas tem 26 anos e 150 pontos</span></code></pre>
+<div class="callout tip"><span class="callout-icon">💡</span><div><strong>String templates</strong> — use <code>$variavel</code> ou <code>\${expressao}</code> direto na string. Muito mais limpo que concatenar com <code>+</code>.</div></div>
+<pre><code><span class="kw">val</span> preco = <span class="num">29.90</span>
+<span class="kw">val</span> desconto = <span class="num">0.10</span>
+println(<span class="str">"Preço: R$ \${"%.2f".format(preco * (1 - desconto))}"</span>)
+<span class="cmt">// saída: Preço: R$ 26.91</span></code></pre>
+`
+      },
+      {
+        id: 'f1m2', title: 'Funções',
+        content: `
+<div class="prose">
+<p>Funções em Kotlin são cidadãs de primeira classe — podem ser armazenadas em variáveis, passadas como parâmetros e retornadas de outras funções.</p>
+</div>
+<pre><code><span class="cmt">// Função básica</span>
+<span class="kw">fun</span> <span class="fn">saudacao</span>(nome: <span class="cls">String</span>): <span class="cls">String</span> {
+    <span class="kw">return</span> <span class="str">"Olá, $nome!"</span>
+}
+
+<span class="cmt">// Função de expressão única (sem chaves, sem return)</span>
+<span class="kw">fun</span> <span class="fn">dobrar</span>(x: <span class="cls">Int</span>) = x * <span class="num">2</span>
+
+<span class="cmt">// Parâmetros com valor padrão</span>
+<span class="kw">fun</span> <span class="fn">criarPerfil</span>(nome: <span class="cls">String</span>, nivel: <span class="cls">String</span> = <span class="str">"junior"</span>) {
+    println(<span class="str">"Dev: $nome | Nível: $nivel"</span>)
+}
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    println(<span class="fn">saudacao</span>(<span class="str">"Lucas"</span>))              <span class="cmt">// Olá, Lucas!</span>
+    println(<span class="fn">dobrar</span>(<span class="num">7</span>))                      <span class="cmt">// 14</span>
+    <span class="fn">criarPerfil</span>(<span class="str">"Lucas"</span>)                    <span class="cmt">// junior</span>
+    <span class="fn">criarPerfil</span>(nivel = <span class="str">"mid"</span>, nome = <span class="str">"Pedro"</span>) <span class="cmt">// argumentos nomeados</span>
+}</code></pre>
+`
+      },
+      {
+        id: 'f1m3', title: 'Null Safety',
+        content: `
+<div class="prose">
+<p>O maior diferencial do Kotlin. <strong>NullPointerException</strong> é o erro mais comum em Java. Kotlin elimina isso no nível de compilação.</p>
+</div>
+<pre><code><span class="cmt">// Tipo normal: NUNCA pode ser null</span>
+<span class="kw">var</span> nome: <span class="cls">String</span> = <span class="str">"Lucas"</span>
+<span class="cmt">// nome = null  ← ERRO de compilação!</span>
+
+<span class="cmt">// Tipo nullable: pode ser null (adiciona ?)</span>
+<span class="kw">var</span> apelido: <span class="cls">String</span>? = <span class="kw">null</span>
+apelido = <span class="str">"Dev"</span>
+
+<span class="cmt">// 1. Safe call operator (?.)</span>
+println(apelido?.length)    <span class="cmt">// imprime length, ou null</span>
+
+<span class="cmt">// 2. Elvis operator (?:) — "se null, use esse valor"</span>
+<span class="kw">val</span> tamanho = apelido?.length ?: <span class="num">0</span>
+println(<span class="str">"Tamanho: $tamanho"</span>)   <span class="cmt">// Tamanho: 3</span>
+
+<span class="cmt">// 3. Let — executa bloco só se não for null</span>
+apelido?.<span class="fn">let</span> {
+    println(<span class="str">"Não é null: $it"</span>)
+}</code></pre>
+<div class="callout tip"><span class="callout-icon">💡</span><div>O operador <code>?:</code> (Elvis) é um dos mais usados no dia a dia com Jetpack Compose. Decore ele.</div></div>
+`
+      },
+      {
+        id: 'f1m4', title: 'when — o switch poderoso',
+        content: `
+<pre><code><span class="kw">fun</span> <span class="fn">classificarIdade</span>(idade: <span class="cls">Int</span>): <span class="cls">String</span> {
+    <span class="kw">return when</span> {
+        idade < <span class="num">0</span>  -> <span class="str">"inválida"</span>
+        idade < <span class="num">13</span> -> <span class="str">"criança"</span>
+        idade < <span class="num">18</span> -> <span class="str">"adolescente"</span>
+        idade < <span class="num">60</span> -> <span class="str">"adulto"</span>
+        <span class="kw">else</span>       -> <span class="str">"idoso"</span>
+    }
+}
+
+<span class="kw">fun</span> <span class="fn">describeNumber</span>(n: <span class="cls">Int</span>) = <span class="kw">when</span> (n) {
+    <span class="num">0</span>    -> <span class="str">"zero"</span>
+    <span class="num">1</span>, <span class="num">2</span> -> <span class="str">"um ou dois"</span>
+    <span class="kw">in</span> <span class="num">3</span>..<span class="num">10</span> -> <span class="str">"entre 3 e 10"</span>
+    <span class="kw">else</span> -> <span class="str">"maior que 10"</span>
+}</code></pre>
+`
+      },
+      {
+        id: 'f1m5', title: 'Data classes e OOP',
+        content: `
+<div class="prose">
+<p>Kotlin reduz drasticamente o boilerplate do Java. Uma <strong>data class</strong> gera automaticamente: <code>equals</code>, <code>hashCode</code>, <code>toString</code> e <code>copy</code>.</p>
+</div>
+<pre><code><span class="cmt">// 1 linha no lugar de 40+ no Java</span>
+<span class="kw">data class</span> <span class="cls">Usuario</span>(
+    <span class="kw">val</span> id: <span class="cls">Int</span>,
+    <span class="kw">val</span> nome: <span class="cls">String</span>,
+    <span class="kw">val</span> email: <span class="cls">String</span>,
+    <span class="kw">val</span> nivel: <span class="cls">String</span> = <span class="str">"junior"</span>
+)
+
+<span class="kw">fun</span> <span class="fn">main</span>() {
+    <span class="kw">val</span> u1 = <span class="cls">Usuario</span>(<span class="num">1</span>, <span class="str">"Lucas"</span>, <span class="str">"lucas@email.com"</span>)
+    <span class="kw">val</span> u2 = u1.copy(nome = <span class="str">"Ana"</span>, email = <span class="str">"ana@email.com"</span>)
+
+    println(u1) <span class="cmt">// Usuario(id=1, nome=Lucas...)</span>
+    println(u1 == u2)  <span class="cmt">// false — compara por conteúdo!</span>
+}</code></pre>
+`
+      },
+      {
+        id: 'f1m6', title: 'Sealed classes',
+        content: `
+<div class="prose">
+<p>Sealed classes são a forma mais elegante de representar <strong>estados</strong> em um app. Você vai usar isso <em>todo dia</em> com Jetpack Compose.</p>
+</div>
+<pre><code><span class="kw">sealed class</span> <span class="cls">UiState</span>&lt;<span class="kw">out</span> T&gt; {
+    <span class="kw">object</span> <span class="cls">Loading</span> : <span class="cls">UiState</span>&lt;Nothing&gt;()
+    <span class="kw">data class</span> <span class="cls">Success</span>&lt;T&gt;(<span class="kw">val</span> data: T) : <span class="cls">UiState</span>&lt;T&gt;()
+    <span class="kw">data class</span> <span class="cls">Error</span>(<span class="kw">val</span> message: <span class="cls">String</span>) : <span class="cls">UiState</span>&lt;Nothing&gt;()
+}
+
+<span class="kw">fun</span> <span class="fn">processarEstado</span>(estado: <span class="cls">UiState</span>&lt;<span class="cls">String</span>&gt;) {
+    <span class="kw">when</span> (estado) {
+        <span class="kw">is</span> <span class="cls">UiState</span>.Loading -> println(<span class="str">"Carregando..."</span>)
+        <span class="kw">is</span> <span class="cls">UiState</span>.Success -> println(<span class="str">"Dados: \${estado.data}"</span>)
+        <span class="kw">is</span> <span class="cls">UiState</span>.Error   -> println(<span class="str">"Erro: \${estado.message}"</span>)
+        <span class="cmt">// Compilador garante que TODOS os casos foram cobertos!</span>
+    }
+}</code></pre>
+<div class="callout info"><span class="callout-icon">ℹ️</span><div>Use <code>object</code> quando o estado não carrega dado nenhum (Loading, Empty). Use <code>data class</code> quando carrega (Success, Error).</div></div>
+`
+      },
+      {
+        id: 'f1m7', title: 'Lambdas e Higher-Order Functions',
+        content: `
+<pre><code><span class="cmt">// Lambda armazenada em variável</span>
+<span class="kw">val</span> saudacao: (<span class="cls">String</span>) -> <span class="cls">String</span> = { nome -> <span class="str">"Olá, $nome!"</span> }
+
+<span class="cmt">// Higher-order function = recebe outra função</span>
+<span class="kw">fun</span> <span class="fn">executar</span>(a: <span class="cls">Int</span>, b: <span class="cls">Int</span>, op: (<span class="cls">Int</span>, <span class="cls">Int</span>) -> <span class="cls">Int</span>) = op(a, b)
+
+<span class="kw">val</span> soma    = <span class="fn">executar</span>(<span class="num">10</span>, <span class="num">5</span>) { x, y -> x + y }   <span class="cmt">// 15</span>
+<span class="kw">val</span> produto = <span class="fn">executar</span>(<span class="num">10</span>, <span class="num">5</span>) { x, y -> x * y }   <span class="cmt">// 50</span>
+
+<span class="cmt">// Funções de coleção — use todo dia</span>
+<span class="kw">val</span> nums = listOf(<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>, <span class="num">7</span>, <span class="num">8</span>, <span class="num">9</span>, <span class="num">10</span>)
+
+<span class="kw">val</span> pares    = nums.<span class="fn">filter</span> { it % <span class="num">2</span> == <span class="num">0</span> }        <span class="cmt">// [2,4,6,8,10]</span>
+<span class="kw">val</span> dobrados = nums.<span class="fn">map</span> { it * <span class="num">2</span> }               <span class="cmt">// [2,4,6,8...]</span>
+<span class="kw">val</span> soma2    = nums.<span class="fn">reduce</span> { acc, n -> acc + n }  <span class="cmt">// 55</span></code></pre>
+`
+      },
+      {
+        id: 'f1m8', title: 'Coroutines — introdução',
+        content: `
+<div class="prose">
+<p>Coroutines são a forma do Kotlin fazer operações assíncronas (rede, banco) sem bloquear a UI. Não precisa dominar agora, mas entenda o básico.</p>
+</div>
+<pre><code><span class="kw">import</span> kotlinx.coroutines.*
+
+<span class="kw">fun</span> <span class="fn">main</span>() = runBlocking {
+    println(<span class="str">"Início"</span>)
+
+    <span class="kw">val</span> job = <span class="fn">launch</span> {
+        <span class="fn">delay</span>(<span class="num">1000</span>)  <span class="cmt">// não bloqueia!</span>
+        println(<span class="str">"Coroutine concluída!"</span>)
+    }
+
+    println(<span class="str">"Executa ANTES da coroutine terminar"</span>)
+    job.<span class="fn">join</span>()
+    println(<span class="str">"Fim"</span>)
+}
+
+<span class="cmt">// suspend = função que pode ser pausada</span>
+<span class="kw">suspend fun</span> <span class="fn">buscarDados</span>(): <span class="cls">String</span> {
+    <span class="fn">delay</span>(<span class="num">500</span>)  <span class="cmt">// simula chamada de rede</span>
+    <span class="kw">return</span> <span class="str">"dados do servidor"</span>
+}</code></pre>
+<div class="callout tip"><span class="callout-icon">💡</span><div>Três conceitos-chave: <code>suspend</code> (função pausável), <code>launch</code> (dispara e esquece), <code>async/await</code> (dispara e espera o resultado).</div></div>
+`
+      },
+    ],
+    exercises: [
+      { id:'e1f1', title:'Calculadora de IMC', diff:'easy', desc:'Crie uma função <code>calcularIMC(peso, altura)</code> que retorna a classificação usando <code>when</code> com ranges. Valide entradas negativas.', hint:'IMC = peso / (altura * altura). Use <code>when { imc &lt; 18.5 -> ... }</code> sem valor fixo no when.' },
+      { id:'e2f1', title:'Null safety na prática', diff:'easy', desc:'Crie <code>exibirPerfil(nome: String, bio: String?)</code> que imprime o nome sempre e a bio se não for null. Use o operador Elvis <code>?:</code>.', hint:'<code>val texto = bio ?: "sem bio"</code> — o Elvis retorna o valor da esquerda se não for null, senão o da direita.' },
+      { id:'e3f1', title:'Data class de produto', diff:'easy', desc:'Crie <code>data class Produto(nome, preco, categoria)</code>. Crie 3 produtos, aplique 10% de desconto num usando <code>.copy()</code>.', hint:'<code>val comDesconto = produto.copy(preco = produto.preco * 0.9)</code>. O copy não modifica o original!' },
+      { id:'e4f1', title:'Sealed class de resultado', diff:'medium', desc:'Crie <code>sealed class Resultado</code> com: <code>Carregando</code>, <code>Sucesso(dados)</code> e <code>Falha(erro)</code>. Use <code>when</code> para tratar cada caso.', hint:'No when use <code>is Resultado.Sucesso -> println(it.dados)</code>. O compilador garante que todos os casos foram cobertos.' },
+      { id:'e5f1', title:'Funções de coleção', diff:'medium', desc:'Com uma lista de produtos, use <code>filter</code>, <code>map</code> e <code>sortedBy</code> para: filtrar preço > R$50, pegar só os nomes, ordenar do mais barato ao mais caro.', hint:'<code>produtos.filter { it.preco > 50 }.sortedBy { it.preco }.map { it.nome }</code> — encadeie as operações!' },
+      { id:'e6f1', title:'Higher-order function', diff:'medium', desc:'Crie <code>aplicarDesconto(preco, calcular: (Double) -> Double)</code>. Chame 3 vezes: 10% desconto, 20% desconto e subtrai R$15 de frete.', hint:'<code>aplicarDesconto(100.0) { preco -> preco * 0.9 }</code>. A lambda recebe o preço e retorna o novo valor.' },
+      { id:'e7f1', title:'Herança e polimorfismo', diff:'medium', desc:'Crie <code>Funcionario(nome, salario)</code> com <code>open fun calcularBonus()</code>. Subclasses: <code>Desenvolvedor</code> (20%) e <code>Gerente</code> (40%). Use polimorfismo numa lista.', hint:'A lista pode ser <code>listOf&lt;Funcionario&gt;(dev, gerente)</code>. O tipo base aceita as subclasses.' },
+      { id:'e8f1', title:'Mini sistema de pedidos', diff:'hard', desc:'Junte tudo: <code>data class Pedido</code> com <code>List&lt;Produto&gt;</code> e <code>sealed class StatusPedido</code> (Pendente, Processando, EmEntrega, Entregue, Cancelado). Função de resumo com <code>when</code>.', hint:'Comece pela sealed class, depois data class Produto, depois Pedido. Use <code>itens.sumOf { it.preco }</code> para o total.' },
+    ]
+  },
+  {
+    id: 'fase2',
+    title: 'Jetpack Compose',
+    subtitle: 'Primeiros passos',
+    color: 'c-green',
+    weeks: 'Sem. 2–4',
+    pills: ['@Composable','Modifiers','Column/Row/Box','State','Material 3','Scaffold'],
+    modules: [
+      {
+        id: 'f2m1', title: 'O paradigma declarativo',
+        content: `
+<div class="prose">
+<p>No XML você <strong>descreve estrutura</strong>. No Compose você <strong>descreve o que a UI deve mostrar dado um estado</strong>.</p>
+<p>É a diferença entre "crie um botão azul aqui" e "se o usuário não logou, mostre botão de login".</p>
+</div>
+<pre><code><span class="cmt">// Regra 1: nome sempre com letra maiúscula</span>
+<span class="cmt">// Regra 2: não retorna nada — ela DESCREVE, não constrói</span>
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">Saudacao</span>(nome: <span class="cls">String</span>) {
+    <span class="fn">Text</span>(text = <span class="str">"Olá, $nome!"</span>)
+}
+
+<span class="cmt">// @Preview = visualiza no Android Studio sem rodar o app</span>
+<span class="ann">@Preview</span>(showBackground = <span class="kw">true</span>)
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">SaudacaoPreview</span>() {
+    <span class="fn">Saudacao</span>(nome = <span class="str">"Lucas"</span>)
+}</code></pre>
+<div class="callout info"><span class="callout-icon">ℹ️</span><div>A função <code>Text</code> também é um <code>@Composable</code>. Tudo em Compose é uma função anotada. Não existe "objeto View", não existe XML.</div></div>
+`
+      },
+      {
+        id: 'f2m2', title: 'Modifiers — o sistema de decoração',
+        content: `
+<div class="prose">
+<p><code>Modifier</code> é como você estiliza, dimensiona e posiciona qualquer composable. Pensa nele como o CSS do Compose — encadeado, em ordem, com type-safety.</p>
+<p><strong>A ordem importa muito!</strong></p>
+</div>
+<pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">CartaoDemo</span>() {
+    <span class="fn">Box</span>(
+        modifier = <span class="cls">Modifier</span>
+            .<span class="fn">size</span>(<span class="num">200</span>.dp)
+            .<span class="fn">background</span>(<span class="cls">Color</span>(<span class="num">0xFF6650A4</span>))
+            .<span class="fn">padding</span>(<span class="num">16</span>.dp),
+        contentAlignment = <span class="cls">Alignment</span>.Center
+    ) {
+        <span class="fn">Text</span>(text = <span class="str">"Compose!"</span>, color = <span class="cls">Color</span>.White)
+    }
+}</code></pre>
+<pre><code><span class="cmt">// Background FORA do padding — cobre tudo</span>
+<span class="cls">Modifier</span>.<span class="fn">background</span>(<span class="cls">Color</span>.Blue).<span class="fn">padding</span>(<span class="num">16</span>.dp)
+
+<span class="cmt">// Background DENTRO do padding — só no conteúdo</span>
+<span class="cls">Modifier</span>.<span class="fn">padding</span>(<span class="num">16</span>.dp).<span class="fn">background</span>(<span class="cls">Color</span>.Blue)</code></pre>
+<div class="callout warn"><span class="callout-icon">⚠️</span><div>Essa ordem dos modificadores é a pegadinha mais comum no Compose. Teste os dois no Preview e observe a diferença.</div></div>
+`
+      },
+      {
+        id: 'f2m3', title: 'Column, Row e Box',
+        content: `
+<pre><code><span class="cmt">// Column — empilha verticalmente</span>
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">PerfilUsuario</span>() {
+    <span class="fn">Column</span>(
+        modifier = <span class="cls">Modifier</span>.<span class="fn">fillMaxWidth</span>().<span class="fn">padding</span>(<span class="num">16</span>.dp),
+        horizontalAlignment = <span class="cls">Alignment</span>.CenterHorizontally,
+        verticalArrangement = <span class="cls">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">8</span>.dp)
+    ) {
+        <span class="fn">Text</span>(text = <span class="str">"Lucas"</span>, fontSize = <span class="num">24</span>.sp, fontWeight = <span class="cls">FontWeight</span>.Bold)
+        <span class="fn">Text</span>(text = <span class="str">"Android Developer"</span>, color = <span class="cls">Color</span>.Gray)
+        <span class="fn">Text</span>(text = <span class="str">"São Paulo, BR"</span>)
+    }
+}
+
+<span class="cmt">// Row — organiza horizontalmente</span>
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">EstatisticasPerfil</span>() {
+    <span class="fn">Row</span>(
+        modifier = <span class="cls">Modifier</span>.<span class="fn">fillMaxWidth</span>(),
+        horizontalArrangement = <span class="cls">Arrangement</span>.SpaceEvenly
+    ) {
+        <span class="fn">EstatisticaItem</span>(<span class="str">"42"</span>, <span class="str">"Projetos"</span>)
+        <span class="fn">EstatisticaItem</span>(<span class="str">"1.2k"</span>, <span class="str">"Seguidores"</span>)
+        <span class="fn">EstatisticaItem</span>(<span class="str">"380"</span>, <span class="str">"Seguindo"</span>)
+    }
+}</code></pre>
+`
+      },
+      {
+        id: 'f2m4', title: 'State — o coração do Compose',
+        content: `
+<div class="prose">
+<p><strong>Regra fundamental:</strong> quando o estado muda, o Compose <em>recompõe</em> os composables que dependem dele, atualizando a UI automaticamente.</p>
+</div>
+<pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">Contador</span>() {
+    <span class="cmt">// remember: mantém o valor entre recomposições</span>
+    <span class="cmt">// mutableStateOf: cria um estado observável</span>
+    <span class="kw">var</span> contador <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="num">0</span>) }
+
+    <span class="fn">Column</span>(horizontalAlignment = <span class="cls">Alignment</span>.CenterHorizontally) {
+        <span class="fn">Text</span>(text = <span class="str">"$contador"</span>, fontSize = <span class="num">48</span>.sp)
+        <span class="fn">Row</span>(horizontalArrangement = <span class="cls">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">8</span>.dp)) {
+            <span class="fn">Button</span>(onClick = { contador-- }) { <span class="fn">Text</span>(<span class="str">"-"</span>) }
+            <span class="fn">Button</span>(onClick = { contador++ }) { <span class="fn">Text</span>(<span class="str">"+"</span>) }
+        }
+    }
+}</code></pre>
+<div class="callout tip"><span class="callout-icon">💡</span><div>Quando <code>contador++</code> executa, o Compose detecta a mudança e re-executa o composable automaticamente. Sem <code>setText()</code>, sem nada manual.</div></div>
+`
+      },
+      {
+        id: 'f2m5', title: 'State Hoisting',
+        content: `
+<div class="prose">
+<p>State hoisting = mover o estado pra cima, deixando composables filhos sem estado próprio. Torna os componentes <strong>reutilizáveis e testáveis</strong>.</p>
+<p><strong>Regra prática: estado desce, eventos sobem.</strong></p>
+</div>
+<pre><code><span class="cmt">// ❌ Stateful — difícil de reutilizar</span>
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">BotaoRuim</span>() {
+    <span class="kw">var</span> clicado <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="kw">false</span>) }
+    <span class="fn">Button</span>(onClick = { clicado = !clicado }) { ... }
+}
+
+<span class="cmt">// ✅ Stateless — recebe estado e evento</span>
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">BotaoToggle</span>(
+    ativo: <span class="cls">Boolean</span>,        <span class="cmt">// estado VEM de fora</span>
+    onToggle: () -> <span class="cls">Unit</span>  <span class="cmt">// evento SAI pra fora</span>
+) {
+    <span class="fn">Button</span>(onClick = onToggle) {
+        <span class="fn">Text</span>(<span class="kw">if</span> (ativo) <span class="str">"Ativo"</span> <span class="kw">else</span> <span class="str">"Inativo"</span>)
+    }
+}
+
+<span class="cmt">// O pai controla o estado</span>
+<span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">TelaPai</span>() {
+    <span class="kw">var</span> ativo <span class="kw">by</span> <span class="fn">remember</span> { <span class="fn">mutableStateOf</span>(<span class="kw">false</span>) }
+    <span class="fn">BotaoToggle</span>(ativo = ativo, onToggle = { ativo = !ativo })
+}</code></pre>
+`
+      },
+      {
+        id: 'f2m6', title: 'Scaffold e Material 3',
+        content: `
+<pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">TelaPrincipal</span>() {
+    <span class="fn">Scaffold</span>(
+        topBar = {
+            <span class="fn">TopAppBar</span>(
+                title = { <span class="fn">Text</span>(<span class="str">"Meu App"</span>) },
+                colors = <span class="cls">TopAppBarDefaults</span>.<span class="fn">topAppBarColors</span>(
+                    containerColor = <span class="cls">MaterialTheme</span>.colorScheme.primaryContainer
+                )
+            )
+        },
+        floatingActionButton = {
+            <span class="fn">FloatingActionButton</span>(onClick = { }) {
+                <span class="fn">Icon</span>(<span class="cls">Icons</span>.Filled.Add, contentDescription = <span class="str">"Adicionar"</span>)
+            }
+        }
+    ) { paddingValues ->
+        <span class="fn">Column</span>(
+            modifier = <span class="cls">Modifier</span>
+                .<span class="fn">fillMaxSize</span>()
+                .<span class="fn">padding</span>(paddingValues) <span class="cmt">// NUNCA esqueça isso!</span>
+                .<span class="fn">padding</span>(<span class="num">16</span>.dp)
+        ) {
+            <span class="fn">Text</span>(<span class="str">"Conteúdo da tela aqui"</span>)
+        }
+    }
+}</code></pre>
+<div class="callout warn"><span class="callout-icon">⚠️</span><div>Para <code>Icons.Filled.Add</code> funcionar, adicione no build.gradle: <code>implementation("androidx.compose.material:material-icons-extended")</code></div></div>
+`
+      },
+      {
+        id: 'f2m7', title: 'LazyColumn — listas performáticas',
+        content: `
+<div class="prose">
+<p><code>LazyColumn</code> é o <code>RecyclerView</code> do Compose — só renderiza os itens visíveis na tela. Use sempre para listas longas.</p>
+</div>
+<pre><code><span class="ann">@Composable</span>
+<span class="kw">fun</span> <span class="fn">ListaTarefas</span>(tarefas: <span class="cls">List</span>&lt;<span class="cls">Tarefa</span>&gt;) {
+    <span class="fn">LazyColumn</span>(
+        modifier = <span class="cls">Modifier</span>.<span class="fn">fillMaxSize</span>(),
+        contentPadding = <span class="cls">PaddingValues</span>(<span class="num">16</span>.dp),
+        verticalArrangement = <span class="cls">Arrangement</span>.<span class="fn">spacedBy</span>(<span class="num">8</span>.dp)
+    ) {
+        item {
+            <span class="fn">Text</span>(<span class="str">"Minhas tarefas"</span>, style = <span class="cls">MaterialTheme</span>.typography.headlineMedium)
+        }
+
+        <span class="cmt">// key melhora performance na recomposição</span>
+        <span class="fn">items</span>(tarefas, key = { it.id }) { tarefa ->
+            <span class="fn">ItemTarefa</span>(tarefa)
+        }
+    }
+}</code></pre>
+`
+      },
+    ],
+    exercises: [
+      { id:'e1f2', title:'Cartão de perfil', diff:'easy', desc:'Crie <code>CartaoPerfil(nome, cargo, empresa)</code> com Column. Nome em negrito grande, cargo médio, empresa cinza pequena. Adicione padding e background com RoundedCornerShape.', hint:'Use <code>MaterialTheme.typography.headlineSmall</code> para o nome. O shape fica no <code>Modifier.clip(RoundedCornerShape(12.dp))</code> antes do background.' },
+      { id:'e2f2', title:'Layout de estatísticas', diff:'easy', desc:'Crie <code>EstatisticasRow(seguidores, seguindo, posts)</code> com Row e Arrangement.SpaceEvenly. Cada item é um Column com número e label.', hint:'Crie um composable auxiliar <code>StatItem(valor, label)</code> e chame 3 vezes dentro do Row.' },
+      { id:'e3f2', title:'Contador com State', diff:'easy', desc:'Crie <code>Contador(min, max)</code> com botões + e -. O botão - fica desabilitado no mínimo, o + no máximo. Use <code>enabled = contador > min</code>.', hint:'O parâmetro <code>enabled</code> do Button aceita Boolean direto: <code>enabled = contador &lt; max</code>.' },
+      { id:'e4f2', title:'Campo de busca com State Hoisting', diff:'medium', desc:'Crie <code>CampoBusca(query, onQueryChange)</code> stateless. O pai <code>TelaBusca</code> tem o estado e filtra uma lista em tempo real.', hint:'No pai: <code>val lista = frutas.filter { it.contains(query, ignoreCase = true) }</code>.' },
+      { id:'e5f2', title:'Lista de tarefas com LazyColumn', diff:'medium', desc:'Lista com LazyColumn onde cada item tem Checkbox. Ao marcar, o texto fica riscado (TextDecoration.LineThrough). Estado controlado pelo pai.', hint:'Ao clicar: <code>tarefas = tarefas.map { if (it.id == id) it.copy(feita = !it.feita) else it }</code>.' },
+      { id:'e6f2', title:'Tela com Scaffold completo', diff:'medium', desc:'Scaffold com TopAppBar e FAB que incrementa um contador no corpo. Use paddingValues corretamente.', hint:'O estado do contador fica no pai do Scaffold. Passe paddingValues para <code>Modifier.padding(paddingValues)</code> no conteúdo.' },
+      { id:'e7f2', title:'Sealed class + Compose', diff:'medium', desc:'Reutilize a UiState da Fase 1. Composable que mostra: spinner no Loading, lista no Success, erro no Error. Botões para simular os 3 estados.', hint:'<code>var state by remember { mutableStateOf<UiState>(UiState.Loading) }</code>. O when redesenha automaticamente.' },
+      { id:'e8f2', title:'Mini app de pedidos com Compose', diff:'hard', desc:'Transforme o sistema de pedidos da Fase 1 em UI real. LazyColumn de pedidos com Card. Cores diferentes por StatusPedido.', hint:'Crie <code>fun corDoStatus(status: StatusPedido): Color</code> com when. Use <code>Modifier.background(corDoStatus(pedido.status))</code>.' },
+    ]
+  },
+  {
+    id: 'fase3',
+    title: 'State, Navigation e ViewModel',
+    subtitle: 'Arquitetura essencial',
+    color: 'c-blue',
+    weeks: 'Sem. 4–6',
+    pills: ['State hoisting','Navigation Compose','ViewModel','StateFlow','LaunchedEffect','MVVM'],
+    modules: [],
+    exercises: []
+  },
+  {
+    id: 'fase4',
+    title: 'Dados, APIs e Arquitetura',
+    subtitle: 'Backend do app',
+    color: 'c-amber',
+    weeks: 'Sem. 6–8',
+    pills: ['Retrofit + OkHttp','Room Database','Hilt / DI','Flow avançado','Repository','Clean Arch'],
+    modules: [],
+    exercises: []
+  },
+  {
+    id: 'fase5',
+    title: 'Portfólio + Mid-Level',
+    subtitle: 'Mercado de trabalho',
+    color: 'c-coral',
+    weeks: 'Sem. 8–10',
+    pills: ['Animations','UI Testing','Play Store','GitHub Profile','LinkedIn','Projetos reais'],
+    modules: [],
+    exercises: []
+  }
+];
+
+// ─────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────
+const STORE_KEY = 'kt_roadmap_v1';
+
+function loadStore() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    return raw ? JSON.parse(raw) : { done: {}, xp: 0, openModules: {} };
+  } catch(e) {
+    return { done: {}, xp: 0, openModules: {} };
+  }
+}
+
+function saveStore(s) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(s)); } catch(e) {}
+}
+
+let store = loadStore();
+let currentScreen = 'home';
+let currentPhase = null;
+
+// ─────────────────────────────────────────
+// PROGRESS
+// ─────────────────────────────────────────
+function totalExercises() {
+  return PHASES.reduce((a, p) => a + p.exercises.length, 0);
+}
+
+function doneCount() {
+  return Object.values(store.done).filter(Boolean).length;
+}
+
+function phaseProgress(phase) {
+  if (!phase.exercises.length) return 0;
+  const d = phase.exercises.filter(e => store.done[e.id]).length;
+  return Math.round((d / phase.exercises.length) * 100);
+}
+
+function updateProgressUI() {
+  const total = totalExercises();
+  const done = doneCount();
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('xp-badge').textContent = store.xp;
+}
+
+// ─────────────────────────────────────────
+// SIDEBAR
+// ─────────────────────────────────────────
+function buildSidebar() {
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = '';
+
+  // Home button
+  const homeBtn = document.createElement('button');
+  homeBtn.className = 'nav-phase-btn' + (currentScreen === 'home' ? ' active' : '');
+  homeBtn.innerHTML = '<div class="phase-dot active">⌂</div> Início';
+  homeBtn.onclick = () => showHome();
+  nav.appendChild(homeBtn);
+
+  PHASES.forEach(phase => {
+    const prog = phaseProgress(phase);
+    const isDone = prog === 100 && phase.exercises.length > 0;
+    const isActive = currentPhase === phase.id;
+
+    const group = document.createElement('div');
+    group.className = 'nav-phase-group';
+
+    const btn = document.createElement('button');
+    btn.className = 'nav-phase-btn' + (isActive ? ' active' : '');
+    btn.innerHTML = `
+      <div class="phase-dot ${isDone ? 'done' : isActive ? 'active' : 'locked'}">${isDone ? '✓' : PHASES.indexOf(phase) + 1}</div>
+      <span>${phase.title}</span>
+      ${isDone ? '<span class="nav-check">✓</span>' : ''}
+    `;
+    btn.onclick = () => showPhase(phase.id);
+    group.appendChild(btn);
+
+    if (isActive && phase.modules.length > 0) {
+      phase.modules.forEach(mod => {
+        const lb = document.createElement('button');
+        lb.className = 'nav-lesson-btn';
+        lb.textContent = mod.title;
+        lb.onclick = () => {
+          const el = document.getElementById('mod-' + mod.id);
+          if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+        };
+        group.appendChild(lb);
+      });
+    }
+
+    nav.appendChild(group);
+  });
+}
+
+// ─────────────────────────────────────────
+// SCREENS
+// ─────────────────────────────────────────
+function showHome() {
+  currentScreen = 'home';
+  currentPhase = null;
+  buildSidebar();
+  document.getElementById('breadcrumb').innerHTML = '<span>Início</span>';
+
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="screen active">
+      <div class="home-hero">
+        <div class="tag">✦ 10 semanas · intensivo</div>
+        <h1>Kotlin + <span class="accent">Compose</span><br>do zero ao mid-level</h1>
+        <p>Roadmap completo com aulas, exercícios práticos e projetos reais para o portfólio. Cada fase construída em cima da anterior.</p>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-item"><span id="h-done">${doneCount()}</span>exercícios feitos</div>
+        <div class="stat-item"><span>${totalExercises()}</span>total de exercícios</div>
+        <div class="stat-item"><span>${store.xp}</span>XP acumulado</div>
+        <div class="stat-item"><span>10</span>semanas</div>
+      </div>
+
+      <div class="phase-cards">
+        ${PHASES.map((p, i) => `
+          <div class="phase-card ${p.color}${i === 4 ? ' full-width' : ''}" onclick="showPhase('${p.id}')">
+            <div class="card-weeks">${p.weeks}</div>
+            <div class="card-num">Fase ${i + 1}</div>
+            <h3>${p.title}</h3>
+            <p>${p.subtitle}</p>
+            <div class="card-pills">${p.pills.map(pl => `<span class="pill">${pl}</span>`).join('')}</div>
+            <div class="card-progress">
+              <div class="card-progress-fill" style="width:${phaseProgress(p)}%"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  updateProgressUI();
+}
+
+function showPhase(phaseId) {
+  const phase = PHASES.find(p => p.id === phaseId);
+  if (!phase) return;
+
+  currentScreen = 'phase';
+  currentPhase = phaseId;
+  buildSidebar();
+
+  document.getElementById('breadcrumb').innerHTML = `Roadmap → <span>${phase.title}</span>`;
+
+  const content = document.getElementById('content');
+
+  // Coming soon for phases 3-5
+  if (phase.modules.length === 0) {
+    content.innerHTML = `
+      <div class="screen active">
+        <div class="lesson-header">
+          <div class="lesson-phase-tag">Fase ${PHASES.indexOf(phase) + 1} · ${phase.weeks}</div>
+          <h1>${phase.title}</h1>
+          <p>${phase.subtitle}</p>
+        </div>
+        <div class="callout info">
+          <span class="callout-icon">🚧</span>
+          <div>
+            <strong>Em breve!</strong> Complete as Fases 1 e 2 primeiro. O conteúdo desta fase será liberado conforme você avança — fale com o Claude no chat para iniciar as aulas da Fase ${PHASES.indexOf(phase) + 1}.
+          </div>
+        </div>
+        <div class="card-pills" style="margin-top:20px;display:flex;flex-wrap:wrap;gap:8px;">
+          ${phase.pills.map(pl => `<span class="pill ${phase.color.replace('c-','')}-pill" style="font-size:12px;padding:6px 14px;border-radius:999px;background:var(--bg3);color:var(--text2);">${pl}</span>`).join('')}
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  const modulesHTML = phase.modules.map((mod, i) => `
+    <div class="module ${store.openModules[mod.id] ? 'open' : ''}" id="mod-${mod.id}">
+      <div class="module-header" onclick="toggleModule('${mod.id}')">
+        <div class="module-num">${i + 1}</div>
+        <span class="module-title">${mod.title}</span>
+        <span class="module-toggle">▼</span>
+      </div>
+      <div class="module-body">
+        <div style="padding-top:16px">${mod.content}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const exHTML = phase.exercises.map((ex, i) => {
+    const isDone = store.done[ex.id];
+    const diffMap = { easy:'fácil', medium:'médio', hard:'desafio' };
+    const diffClass = { easy:'diff-easy', medium:'diff-medium', hard:'diff-hard' };
+    const numColors = ['n1','n2','n3','n4','n5','n6','n7','n8'];
+    return `
+      <div class="ex-card" id="excard-${ex.id}">
+        <div class="ex-card-top">
+          <div class="ex-num ${numColors[i]}">${i + 1}</div>
+          <span class="ex-title">${ex.title}</span>
+          <span class="diff-badge ${diffClass[ex.diff]}">${diffMap[ex.diff]}</span>
+          <span class="done-pill" id="done-${ex.id}" style="display:${isDone ? 'inline-block' : 'none'}">concluído</span>
+        </div>
+        <p class="ex-desc">${ex.desc}</p>
+        <div class="hint-box" id="hint-${ex.id}">${ex.hint}</div>
+        <div class="ex-actions">
+          <button class="btn btn-ghost" onclick="toggleHint('${ex.id}')">💡 dica</button>
+          <button class="btn btn-primary" onclick="askSolution('${ex.id}', '${phase.id}')">ver solução ↗</button>
+          <button class="btn btn-success ${isDone ? '' : ''}" onclick="markDone('${ex.id}')">${isDone ? '✓ feito' : 'marcar como feito'}</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  const totalDone = phase.exercises.filter(e => store.done[e.id]).length;
+
+  content.innerHTML = `
+    <div class="screen active">
+      <div class="lesson-header">
+        <div class="lesson-phase-tag">Fase ${PHASES.indexOf(phase) + 1} · ${phase.weeks}</div>
+        <h1>${phase.title}</h1>
+        <p>${phase.subtitle} — ${phase.modules.length} módulos · ${phase.exercises.length} exercícios</p>
+      </div>
+
+      <div class="stats-bar">
+        <div class="stat-item"><span>${phase.modules.length}</span>módulos</div>
+        <div class="stat-item"><span id="phase-done-count">${totalDone}</span>exercícios feitos</div>
+        <div class="stat-item"><span>${phase.exercises.length}</span>total</div>
+        <div class="stat-item"><span>${phaseProgress(phase)}%</span>progresso</div>
+      </div>
+
+      <div id="modules-section">
+        <h2 style="font-family:var(--font-head);font-size:20px;font-weight:700;margin-bottom:16px;">📖 Aulas</h2>
+        ${modulesHTML}
+      </div>
+
+      <div class="exercises" style="margin-top:32px;">
+        <h2>🎯 Exercícios</h2>
+        ${exHTML}
+      </div>
+
+      <div class="lesson-nav">
+        <button class="btn btn-ghost" onclick="showHome()">← Voltar ao início</button>
+        ${PHASES.indexOf(phase) < PHASES.length - 1 ?
+          `<button class="btn btn-primary" onclick="showPhase('${PHASES[PHASES.indexOf(phase)+1].id}')">Próxima fase →</button>` : ''}
+      </div>
+    </div>
+  `;
+
+  addCopyButtons();
+  updateProgressUI();
+  window.scrollTo({ top: 0 });
+}
+
+// ─────────────────────────────────────────
+// ACTIONS
+// ─────────────────────────────────────────
+function toggleModule(modId) {
+  const el = document.getElementById('mod-' + modId);
+  const isOpen = el.classList.toggle('open');
+  store.openModules[modId] = isOpen;
+  saveStore(store);
+}
+
+function toggleHint(exId) {
+  document.getElementById('hint-' + exId).classList.toggle('vis');
+}
+
+function markDone(exId) {
+  if (!store.done[exId]) {
+    store.done[exId] = true;
+    store.xp += 50;
+    saveStore(store);
+    document.getElementById('done-' + exId).style.display = 'inline-block';
+    document.getElementById('xp-badge').textContent = store.xp;
+
+    // update phase done count
+    const countEl = document.getElementById('phase-done-count');
+    if (countEl) {
+      const phase = PHASES.find(p => p.exercises.some(e => e.id === exId));
+      if (phase) countEl.textContent = phase.exercises.filter(e => store.done[e.id]).length;
+    }
+
+    updateProgressUI();
+    buildSidebar();
+
+    // Confetti micro-feedback
+    const btn = event.currentTarget;
+    btn.textContent = '✓ feito!';
+    btn.style.background = 'var(--green2)';
+    btn.style.color = 'var(--green)';
+  }
+}
+
+function askSolution(exId, phaseId) {
+  const phase = PHASES.find(p => p.id === phaseId);
+  const ex = phase.exercises.find(e => e.id === exId);
+  const phaseNum = PHASES.indexOf(phase) + 1;
+  const exNum = phase.exercises.indexOf(ex) + 1;
+
+  // Create a message to send back to Claude
+  const msg = `Me mostre a solução completa e detalhada do Exercício ${exNum} da Fase ${phaseNum} de ${phase.title}: ${ex.title}.`;
+  const encoded = encodeURIComponent(msg);
+
+  // Copy to clipboard and alert
+  navigator.clipboard.writeText(msg).then(() => {
+    showToast('📋 Mensagem copiada! Cole no chat com o Claude.');
+  }).catch(() => {
+    showToast('💬 Copie e cole no chat: "' + msg.substring(0, 60) + '..."');
+  });
+}
+
+function showToast(msg) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = `
+      position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+      background:var(--bg3);border:1px solid var(--border2);color:var(--text);
+      padding:12px 24px;border-radius:10px;font-size:13px;z-index:9999;
+      transition:transform 0.3s;white-space:nowrap;font-family:var(--font-code);
+      box-shadow:0 8px 32px rgba(0,0,0,0.4);
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => { toast.style.transform = 'translateX(-50%) translateY(100px)'; }, 3500);
+}
+
+function addCopyButtons() {
+  document.querySelectorAll('pre code').forEach(block => {
+    const pre = block.parentElement;
+    if (pre.querySelector('.copy-btn')) return;
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'copiar';
+    btn.onclick = () => {
+      const text = block.innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'copiado!';
+        btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'copiar'; btn.classList.remove('copied'); }, 2000);
+      });
+    };
+    pre.appendChild(btn);
+  });
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ─────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────
+showHome();
+</script>
+</body>
+</html>
